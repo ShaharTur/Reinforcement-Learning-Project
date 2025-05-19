@@ -15,7 +15,7 @@ We developed a 2D maze simulation in Python and applied the **Q-Learning** algor
 
 ## 🎥 Demonstration
 
-![RL Maze Demo](assets/simulation.gif)
+![RL Maze Demo](maze_demo.gif)
 
 ## 🧪 Technologies Used
 
