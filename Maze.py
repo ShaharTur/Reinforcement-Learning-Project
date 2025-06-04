@@ -111,8 +111,6 @@ class Maze:
 
     def render(self, screen):
         screen.fill(WHITE)
-
-
         for i in range(ROWS):
             for j in range(COLS):
                 rect = pygame.Rect(j * CELL_SIZE, i * CELL_SIZE, CELL_SIZE, CELL_SIZE)
