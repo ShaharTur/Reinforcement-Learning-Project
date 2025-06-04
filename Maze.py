@@ -132,7 +132,7 @@ class Maze:
                 if (i, j) == self.goal_pos and self.flag_img:
                     screen.blit(self.flag_img, rect)
                     
-        # צייר את המכונית
+        # מכונית
         if not self.game_over and self.car_img_original:
             rect = pygame.Rect(self.agent_pos[1] * CELL_SIZE, self.agent_pos[0] * CELL_SIZE, CELL_SIZE, CELL_SIZE)
             if self.last_action == 0:
@@ -144,13 +144,6 @@ class Maze:
             else:
                 car_rotated = self.car_img_original
             screen.blit(car_rotated, rect)
-            
-        # אם נפלנו לבור, הצג הודעה על המסך
-        if self.game_over and self.maze[self.agent_pos[0], self.agent_pos[1]] == 2:
-            font = pygame.font.SysFont(None, 72)
-            text = font.render("!נפלת לבור", True, (255, 0, 0))
-            text_rect = text.get_rect(center=(WIDTH//2, HEIGHT//2))
-            screen.blit(text, text_rect)
 
 def main():
     pygame.init()
@@ -188,8 +181,7 @@ def main():
                 if reward > 0:
                     pygame.quit()
                     sys.exit()
-                else:
-                    # נפילה לבור
+                else: #נפילה לבור
                     pygame.quit()
                     sys.exit()
 
@@ -199,5 +191,4 @@ def main():
 
 
 if __name__ == "__main__":
-    # הרצת המשחק הרגיל (שליטה ידנית)
     main()
