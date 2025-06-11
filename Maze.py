@@ -2,6 +2,7 @@ import pygame
 import numpy as np
 import sys
 
+#הגדרות כלליות של הסביבה והגודל שלה
 CELL_SIZE = 60
 ROWS, COLS = 20, 20
 WIDTH, HEIGHT = COLS * CELL_SIZE, ROWS * CELL_SIZE
@@ -17,8 +18,11 @@ ACTIONS = {
 }
 
 class Maze:
-    def __init__(self):
-        self.maze = np.array([
+    def __init__(self,maze=None):
+        if maze is not None:## החלק הזה מאפשר לנו בקובץ של האימון לנסות עוד מבנים שונים של מבוכים
+            self.maze=maze
+        else:#מטריצת ברירת המחדל שלנו שבנינו של המבוך 0 הסוכן יכול לנוע במרחבים הללו ,1 זה קירות ,2 זה בור 
+            self.maze = np.array([
     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
     [1,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,1],
     [1,0,1,1,0,1,0,1,1,1,0,1,0,1,1,1,0,1,0,1],
@@ -45,14 +49,14 @@ class Maze:
         self.wall_colors = [(255, 0, 0), (255, 255, 255)]
         self.last_action = 3
 
-        # בונה מיפוי ממצבים חוקיים למספרים רציפים לטובת למידת חיזוקים
+        # הופך את המספרים של הסטייטים מקוארדינטות למספר יחיד קבוע
         self.coord_to_index, self.index_to_coord = self.build_state_mappings()
         self.reset()
 
         self.car_img_original = None
         self.flag_img = None
         self.hole_img = None
-
+    #הפונקציה הזו הופכת קוארדינטות למספר קבועים
     def build_state_mappings(self):
         coord_to_index = {}
         index_to_coord = {}
@@ -64,7 +68,7 @@ class Maze:
                     index_to_coord[index] = (i, j)
                     index += 1
         return coord_to_index, index_to_coord
-
+    #פה אנחנו טוענים את התמונות ששומשו במשחק כמו הרכב הבורות והדגל
     def load_images(self):
         self.car_img_original = pygame.image.load("assets/car.png").convert_alpha()
         self.flag_img = pygame.image.load("assets/flag.png").convert_alpha()
@@ -73,7 +77,7 @@ class Maze:
         self.car_img_original = pygame.transform.scale(self.car_img_original, (CELL_SIZE, CELL_SIZE))
         self.flag_img = pygame.transform.scale(self.flag_img, (CELL_SIZE, CELL_SIZE))
         self.hole_img = pygame.transform.scale(self.hole_img, (CELL_SIZE, CELL_SIZE))
-
+    #מפה והלאה אלה הם ההגדרות של הסביבה שנוכל לעבוד איתה עם סוכן בלמידה שנעשה
     def reset(self):
         self.agent_pos = self.start_pos
         self.game_over = False
@@ -108,9 +112,10 @@ class Maze:
             reward = -0.1
 
         return self.get_state(), reward, done
-
+    #זו פנוקציה שנוכל להשתמש בה כדי לראות ויזואלית איך הכל נראה
     def render(self, screen):
         screen.fill(WHITE)
+        
         for i in range(ROWS):
             for j in range(COLS):
                 rect = pygame.Rect(j * CELL_SIZE, i * CELL_SIZE, CELL_SIZE, CELL_SIZE)
@@ -130,7 +135,7 @@ class Maze:
                 if (i, j) == self.goal_pos and self.flag_img:
                     screen.blit(self.flag_img, rect)
                     
-        # מכונית
+        # ציור של המכונית
         if not self.game_over and self.car_img_original:
             rect = pygame.Rect(self.agent_pos[1] * CELL_SIZE, self.agent_pos[0] * CELL_SIZE, CELL_SIZE, CELL_SIZE)
             if self.last_action == 0:
@@ -142,7 +147,9 @@ class Maze:
             else:
                 car_rotated = self.car_img_original
             screen.blit(car_rotated, rect)
-
+            
+        
+# אם נרצה לשחק במשחק בעצמנו אז ישנה אפשרות כזו פה במיין ,ובעיקר כדי לוודא שהכל תקין ידנית גם 
 def main():
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -179,7 +186,8 @@ def main():
                 if reward > 0:
                     pygame.quit()
                     sys.exit()
-                else: #נפילה לבור
+                else:
+                    # נפילה לבור
                     pygame.quit()
                     sys.exit()
 
@@ -189,4 +197,5 @@ def main():
 
 
 if __name__ == "__main__":
+    
     main()
